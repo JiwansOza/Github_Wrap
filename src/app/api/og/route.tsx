@@ -20,6 +20,14 @@ export async function GET(req: NextRequest) {
         const repo = searchParams.get('repo') || '';
         const repoStars = searchParams.get('repoStars') || '0';
 
+        let languages: any[] = [];
+        try {
+            const langParam = searchParams.get('languages');
+            if (langParam) languages = JSON.parse(langParam);
+        } catch (e) {
+            console.error('Failed to parse languages', e);
+        }
+
         // Static Theme (Cyberpunk/Dark)
         const t = {
             bg: '#0d1117',
@@ -148,9 +156,22 @@ export async function GET(req: NextRequest) {
                                 <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>PRs MERGED</div>
                                 <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain }}>{prs}</div>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginBottom: '8px' }}>TOP LANG</div>
-                                <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain }}>{topLang}</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1.5, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginBottom: '16px' }}>TOP LANGUAGES</div>
+                                {/* Visualize Bar */}
+                                <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>
+                                    {languages.map((l, i) => (
+                                        <div key={i} style={{ display: 'flex', height: '100%', width: `${l.percent}%`, backgroundColor: l.color }} />
+                                    ))}
+                                </div>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                                    {languages.slice(0, 3).map((l, i) => (
+                                        <div key={i} style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: t.textSub }}>
+                                            <div style={{ display: 'flex', width: '12px', height: '12px', borderRadius: '50%', backgroundColor: l.color, marginRight: '8px' }} />
+                                            {l.name}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
