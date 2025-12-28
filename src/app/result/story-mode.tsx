@@ -90,8 +90,8 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                     <h3 className="text-2xl uppercase tracking-widest opacity-80">God Mode</h3>
 
                     <div className="bg-white/10 p-6 rounded-3xl border border-white/20 backdrop-blur-lg">
-                        <div className="text-sm opacity-70 uppercase mb-2">On {new Date(stats.busiestDay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>
-                        <div className="text-7xl font-black">{stats.busiestDay.count}</div>
+                        <div className="text-sm opacity-70 uppercase mb-2">On {stats.busiestDay?.date ? new Date(stats.busiestDay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Unknown Date'}</div>
+                        <div className="text-7xl font-black">{stats.busiestDay?.count || 0}</div>
                         <div className="text-lg font-bold">Contributions</div>
                     </div>
                     <p className="opacity-80 max-w-[240px]">
