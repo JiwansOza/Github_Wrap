@@ -77,8 +77,10 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
             totalIssueContributions
             totalPullRequestReviewContributions
             commitContributionsByRepository {
-              contributions {
-                occurredAt
+              contributions(first: 100) {
+                nodes {
+                  occurredAt
+                }
               }
             }
             contributionCalendar {
@@ -228,7 +230,7 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     let totalTimeSamples = 0;
 
     commitRepos.forEach((repoData: any) => {
-      repoData.contributions.forEach((contrib: any) => {
+      repoData.contributions.nodes.forEach((contrib: any) => {
         const date = new Date(contrib.occurredAt);
         const hour = date.getHours();
         const day = date.getDay(); // 0 is Sunday, 6 is Saturday
