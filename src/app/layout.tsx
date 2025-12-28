@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GitHub Wrapped 2025",
   description: "Discover your 2025 year in code! Commits, top languages, and your coding personality.",
-  metadataBase: new URL('https://github-wrap-mocha.vercel.app'),
+  metadataBase: new URL('https://2025-wrapped-jiwans.vercel.app'),
 };
 
 export default function RootLayout({
