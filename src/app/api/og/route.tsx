@@ -189,14 +189,24 @@ export async function GET(req: NextRequest) {
                                 </div>
                             </div>
 
+                            const velocity = searchParams.get('velocity') || '0';
+                            const polyglot = searchParams.get('polyglot') || '0';
+                            // ... (inside JSX)
+
+                            // ...
+
+                            {/* Velocity / God Mode (Replaces Peak Day) */}
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 0.8, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>PEAK DAY</div>
-                                <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain, textTransform: 'uppercase', lineHeight: 1 }}>{peakDay.slice(0, 3)}</div>
-                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Most Active</div>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>MAX VELOCITY</div>
+                                <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain, lineHeight: 1 }}>{velocity}</div>
+                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Contribs / Day</div>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.5, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginBottom: '16px' }}>TOP LANGUAGES</div>
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                    <div style={{ display: 'flex', fontSize: 20, color: t.textSub }}>TOP LANGUAGES</div>
+                                    <div style={{ display: 'flex', fontSize: 16, color: t.accent2, fontWeight: 'bold' }}>Polyglot: {polyglot}</div>
+                                </div>
                                 <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>
                                     {languages.map((l, i) => (
                                         <div key={i} style={{ display: 'flex', height: '100%', width: `${l.percent}%`, backgroundColor: l.color }} />

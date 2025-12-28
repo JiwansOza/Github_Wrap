@@ -33,6 +33,8 @@ function getOgUrl(baseUrl: string, stats: any, theme: string) {
         starred: (stats.totalStarred || 0).toString(),
         activity: JSON.stringify(stats.activityByPeriod || {}),
         languages: JSON.stringify(stats.languages || []),
+        velocity: (stats.busiestDay?.count || 0).toString(),
+        polyglot: (stats.polyglotScore || 0).toString(),
     });
     return `/api/og?${params.toString()}`;
 }
