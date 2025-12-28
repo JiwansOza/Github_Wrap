@@ -13,6 +13,28 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
     const [index, setIndex] = useState(0);
     const [exitX, setExitX] = useState(0);
 
+    const handleDragEnd = (event: any, info: any) => {
+        if (info.offset.x > 100) {
+            setExitX(200);
+            if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50); // Haptic
+            setTimeout(() => nextCard(), 200);
+        } else if (info.offset.x < -100) {
+            setExitX(-200);
+            if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50); // Haptic
+            setTimeout(() => nextCard(), 200);
+        }
+    };
+
+    const nextCard = () => {
+        if (index === slides.length - 1) {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 100, 50]); // Success Haptic
+            onComplete();
+        } else {
+            setIndex(index + 1);
+            setExitX(0);
+        }
+    };
+
     const slides = [
         // Card 1: Intro
         {
@@ -21,7 +43,10 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                 <div className="flex flex-col items-center justify-center h-full text-center p-6">
                     <div className="text-8xl mb-6">👀</div>
                     <h2 className="text-4xl font-black mb-4">Ready to swipe?</h2>
-                    <p className="text-xl opacity-90">Your 2025 year in code is waiting.</p>
+                    <p className="text-xl opacity-90 mb-6">Your 2025 year in code is waiting.</p>
+                    <div className="bg-white/20 px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm">
+                        Legend since {new Date().getFullYear() - stats.yearsActive} 🏅
+                    </div>
                 </div>
             )
         },

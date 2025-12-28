@@ -33,6 +33,7 @@ export interface WrappedStats {
   totalIssues: number;
   totalReviews: number; // New
   totalStars: number;
+  yearsActive: number; // New
   roast: string;
   topRepo: { name: string; stars: number; description: string };
 }
@@ -264,23 +265,29 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     else if (longestStreak > 30) roast = "Consistency is key, but so is sleep.";
     else if (codingStyle.includes("Weekend")) roast = "Weekend Warrior: Coding only when paid to do so? Oh wait, it's free.";
 
+    // Calculate Years Active
+    const createdYear = new Date(user.created_at).getFullYear();
+    const currentYear = new Date().getFullYear();
+    const yearsActive = currentYear - createdYear;
+
     return {
       username: user.login,
       avatarUrl: user.avatar_url,
-      followers: user.followers, // New
+      followers: user.followers,
       totalCommits,
       totalPublicRepos: user.public_repos,
       daysActive,
       longestStreak,
       currentStreak,
       mostActiveMonth,
-      mostActiveDay, // New
+      mostActiveDay,
       topLanguage,
       languages,
       codingStyle,
+      yearsActive, // New
       totalPRs,
       totalIssues,
-      totalReviews, // New
+      totalReviews,
       totalStars,
       roast,
       topRepo,
