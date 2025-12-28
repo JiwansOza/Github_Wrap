@@ -113,11 +113,12 @@ export async function GET(req: NextRequest) {
                         boxShadow: '0 50px 100px -20px rgba(0,0,0,0.8)',
                     }}>
                         {/* Header with Avatar and Member Since */}
-                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 {avatar && <img src={avatar} width="100" height="100" style={{ borderRadius: '50%', border: '4px solid #fff', marginRight: '24px' }} />}
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', fontSize: 60, fontWeight: 'bold', lineHeight: 1.1, color: t.textMain }}>@{username}</div>
+                                    <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginTop: '4px' }}>Your GitHub activity at a glance</div>
                                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', fontSize: 24, color: t.textSub, marginTop: '8px' }}>
                                         Since {new Date(searchParams.get('created') || Date.now()).getFullYear()} <span style={{ margin: '0 10px' }}>•</span> {followers} Followers
                                     </div>
@@ -125,17 +126,27 @@ export async function GET(req: NextRequest) {
                             </div>
 
                             {/* Roast Badge */}
-                            <div style={{
-                                display: 'flex',
-                                padding: '10px 24px',
-                                borderRadius: '100px',
-                                backgroundColor: 'rgba(57, 211, 83, 0.1)',
-                                border: `1px solid ${t.accent1}`,
-                                color: t.accent1,
-                                fontSize: 24,
-                                fontWeight: 'bold',
-                            }}>
-                                {style}
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                <div style={{
+                                    display: 'flex',
+                                    padding: '10px 24px',
+                                    borderRadius: '100px',
+                                    backgroundColor: 'rgba(57, 211, 83, 0.1)',
+                                    border: `1px solid ${t.accent1}`,
+                                    color: t.accent1,
+                                    fontSize: 24,
+                                    fontWeight: 'bold',
+                                    marginBottom: '8px'
+                                }}>
+                                    {style}
+                                </div>
+                                <div style={{ display: 'flex', fontSize: 14, color: t.textSub }}>
+                                    {style.includes('Night') ? 'Most commits late at night' :
+                                        style.includes('Morning') || style.includes('Early') ? 'Most commits before 10 AM' :
+                                            style.includes('Weekend') ? 'Most active on Sat/Sun' :
+                                                style.includes('Burner') ? 'Burning the midnight oil' :
+                                                    'Consistent daily activity'}
+                                </div>
                             </div>
                         </div>
 
@@ -145,42 +156,63 @@ export async function GET(req: NextRequest) {
                             flexDirection: 'column',
                             backgroundColor: 'rgba(255,255,255,0.05)',
                             borderRadius: '24px',
-                            padding: '30px',
-                            marginBottom: '24px',
+                            padding: '24px',
+                            marginBottom: '20px',
                             border: '1px solid rgba(255,255,255,0.05)',
                         }}>
-                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.accent2, textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>AI Analysis</div>
-                                <div style={{ display: 'flex', fontSize: 20, color: 'rgba(255,255,255,0.4)' }}>{searchParams.get('starred') || '0'} Stars Given</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '16px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', fontSize: 20, color: t.accent2, textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>AI Analysis</div>
+                                    <div style={{ display: 'flex', fontSize: 20, color: 'rgba(255,255,255,0.4)' }}>{searchParams.get('starred') || '0'} Stars Given</div>
+                                </div>
+                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Based on your repositories & activity</div>
                             </div>
                             <div style={{ display: 'flex', fontSize: 40, fontStyle: 'italic', color: t.textMain, lineHeight: 1.3 }}>"{roast}"</div>
                         </div>
 
-                        {/* Main Stats Row */}
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '24px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ display: 'flex', fontSize: 110, fontWeight: 'bold', lineHeight: 1, color: t.textMain }}>
+                        {/* Main Stats Row - Grouped */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            backgroundColor: 'rgba(255,255,255,0.03)',
+                            borderRadius: '24px',
+                            padding: '24px',
+                            marginBottom: '24px',
+                            justifyContent: 'space-around',
+                            alignItems: 'center',
+                            border: '1px solid rgba(255,255,255,0.05)'
+                        }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', fontSize: 80, fontWeight: 'bold', lineHeight: 1, color: t.textMain }}>
                                     {commits}
                                 </div>
-                                <div style={{ display: 'flex', fontSize: 32, color: t.textSub, marginTop: '8px' }}>
+                                <div style={{ display: 'flex', fontSize: 24, color: t.textSub, marginTop: '8px' }}>
                                     Total Commits
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                <div style={{ display: 'flex', fontSize: 110, fontWeight: 'bold', lineHeight: 1, color: t.accent1 }}>
+                            <div style={{ display: 'flex', width: '1px', height: '80px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', fontSize: 80, fontWeight: 'bold', lineHeight: 1, color: t.accent1 }}>
                                     {days}
                                 </div>
-                                <div style={{ display: 'flex', fontSize: 32, color: t.textSub, marginTop: '8px' }}>
+                                <div style={{ display: 'flex', fontSize: 24, color: t.textSub, marginTop: '8px' }}>
                                     Days Active
                                 </div>
                             </div>
                         </div>
 
                         {/* Secondary Stats Grid */}
-                        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '24px', gap: '24px' }}>
-                            {/* Pulse Graph (Replaces Streak) */}
+                        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '20px', gap: '20px' }}>
+                            {/* Pulse Graph (Daily Rhythm) */}
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.2, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.accent2, marginBottom: 'auto' }}>DAILY RHYTHM</div>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.accent2, marginBottom: '4px' }}>DAILY RHYTHM</div>
+                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginBottom: 'auto' }}>
+                                    Most active: {
+                                        activity.morning > activity.daytime && activity.morning > activity.evening && activity.morning > activity.night ? 'Morning' :
+                                            activity.daytime > activity.evening && activity.daytime > activity.night ? 'Daytime' :
+                                                activity.evening > activity.night ? 'Evening' : 'Night'
+                                    }
+                                </div>
                                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: '60px', width: '100%', gap: '8px' }}>
                                     {[
                                         { label: 'M', val: activity.morning, color: '#fcd34d' }, // Morning
@@ -208,12 +240,11 @@ export async function GET(req: NextRequest) {
 
 
 
-
-                            {/* Velocity / God Mode (Replaces Peak Day) */}
+                            {/* Peak Day (Replaces Velocity for this request) */}
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 0.8, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>MAX VELOCITY</div>
-                                <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain, lineHeight: 1 }}>{velocity}</div>
-                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Contribs / Day</div>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>MOST ACTIVE DAY</div>
+                                <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain, lineHeight: 1, textTransform: 'uppercase' }}>{peakDay.slice(0, 3)}</div>
+                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>You commit the most on {peakDay}s.</div>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.5, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
@@ -249,7 +280,7 @@ export async function GET(req: NextRequest) {
                                 flexDirection: 'column',
                                 width: '100%',
                                 backgroundColor: 'rgba(0,0,0,0.2)',
-                                padding: '30px',
+                                padding: '24px',
                                 borderRadius: '24px',
                                 border: '1px solid rgba(255,255,255,0.1)',
                             }}>
@@ -268,11 +299,12 @@ export async function GET(req: NextRequest) {
                                 </div>
                             </div>
                         )}
-                        {/* Credits */}
-                        <div style={{ display: 'flex', width: '100%', justifyContent: 'center', marginTop: 'auto', paddingTop: '24px' }}>
-                            <div style={{ display: 'flex', fontSize: 18, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                                Built by @JiwansOza
-                            </div>
+
+                    </div>
+                    {/* Credits */}
+                    <div style={{ display: 'flex', width: '100%', justifyContent: 'center', marginTop: '30px' }}>
+                        <div style={{ display: 'flex', fontSize: 18, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                            Built by @jiwansOza · GitHub Wrapped
                         </div>
                     </div>
                 </div>

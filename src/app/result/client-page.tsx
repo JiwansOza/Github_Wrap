@@ -42,11 +42,12 @@ function getOgUrl(baseUrl: string, stats: any, theme: string) {
 export default function ClientPage({ stats }: { stats: any }) {
     const [theme] = useState('cyberpunk');
     const [showStory, setShowStory] = useState(true);
+    const [imageLoaded, setImageLoaded] = useState(false); // New state
     const ogImageUrl = getOgUrl(typeof window !== 'undefined' ? window.location.origin : '', stats, theme);
     const storyImageUrl = ogImageUrl + '&size=story';
 
     useEffect(() => {
-        if (!showStory) {
+        if (!showStory && imageLoaded) { // Check both conditions
             const duration = 3000;
             const end = Date.now() + duration;
 
@@ -72,7 +73,7 @@ export default function ClientPage({ stats }: { stats: any }) {
             };
             frame();
         }
-    }, [showStory]);
+    }, [showStory, imageLoaded]); // Add imageLoaded dependency
 
     if (showStory) {
         return <StoryMode stats={stats} onComplete={() => setShowStory(false)} />;
@@ -114,19 +115,25 @@ export default function ClientPage({ stats }: { stats: any }) {
                         <div className="absolute -inset-1 bg-gradient-to-tr from-green-500/20 to-purple-500/20 rounded-[2rem] blur-xl opacity-40 group-hover:opacity-60 transition duration-1000 animate-pulse"></div>
                         <TiltCard>
                             {/* Responsive Image: w-full, height-auto to maintain aspect ratio */}
-                            <div className="relative w-full aspect-[4/5]">
+                            <div className="relative w-full aspect-[4/5] flex items-center justify-center bg-[#0d1117] rounded-3xl overflow-hidden shadow-2xl">
+                                {!imageLoaded && (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
+                                    </div>
+                                )}
                                 <img
                                     src={ogImageUrl}
                                     alt={`GitHub Wrapped for ${stats.username}`}
-                                    className="w-full h-full object-contain rounded-3xl shadow-2xl bg-[#0d1117]"
+                                    className={`w-full h-full object-contain transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                                     loading="eager"
+                                    onLoad={() => setImageLoaded(true)}
                                 />
                             </div>
                         </TiltCard>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="w-full space-y-4">
+                    <div className={`w-full space-y-4 transition-all duration-700 ${imageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                         <ShareButtons
                             username={stats.username}
                             ogImageUrl={ogImageUrl}
