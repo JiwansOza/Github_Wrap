@@ -64,7 +64,28 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                 </div>
             )
         },
-        // Card 5: The Roast
+        // Card 5: Community & Rhythm (New)
+        {
+            color: "from-fuchsia-600 to-purple-900",
+            content: (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8">
+                    <div>
+                        <h3 className="text-xl uppercase tracking-widest opacity-70 mb-2">Community</h3>
+                        <div className="text-7xl font-black">{stats.followers}</div>
+                        <div className="text-lg opacity-80">Followers</div>
+                    </div>
+
+                    <div className="w-full h-px bg-white/20" />
+
+                    <div>
+                        <h3 className="text-lg uppercase tracking-widest opacity-70 mb-2">Peak Productivity</h3>
+                        <div className="text-4xl font-bold text-yellow-300">{stats.mostActiveDay}s</div>
+                        <div className="text-sm opacity-80 mt-1">are your power days</div>
+                    </div>
+                </div>
+            )
+        },
+        // Card 6: The Roast
         {
             color: "from-pink-600 to-rose-900",
             content: (
