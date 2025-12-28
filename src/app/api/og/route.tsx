@@ -53,9 +53,10 @@ export async function GET(req: NextRequest) {
             return new Response('Missing username', { status: 400 });
         }
 
+        const size = searchParams.get('size');
         const options: any = {
             width: 1080,
-            height: 1350,
+            height: size === 'story' ? 1920 : 1350,
         };
 
         // Helper for safe flex containers

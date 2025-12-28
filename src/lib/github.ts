@@ -39,6 +39,8 @@ export interface WrappedStats {
   totalStarred: number; // New
   totalContributedTo: number; // New
   activityByPeriod: { morning: number; daytime: number; evening: number; night: number }; // New
+  busiestDay: { date: string; count: number }; // New
+  polyglotScore: number; // New
 }
 
 export async function getGitHubStats(username: string): Promise<WrappedStats | null> {
@@ -198,6 +200,26 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     });
     longestStreak = Math.max(longestStreak, currentStreak);
 
+    // Most Active Day & Busiest Day
+    let mostActiveDay = "Wednesday";
+    let maxDayActivity = 0;
+    let busiestDay = { date: '', count: 0 }; // New
+
+    for (const [day, count] of Object.entries(daysOfWeekActivity)) {
+      if (count > maxDayActivity) {
+        maxDayActivity = count;
+        mostActiveDay = day;
+      }
+    }
+
+    contributionCalendar.weeks.forEach((week: any) => {
+      week.contributionDays.forEach((day: any) => {
+        if (day.contributionCount > busiestDay.count) {
+          busiestDay = { date: day.date, count: day.contributionCount };
+        }
+      });
+    });
+
     // Most Active Month
     let mostActiveMonth = "January";
     let maxMonthActivity = 0;
@@ -205,16 +227,6 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
       if (count > maxMonthActivity) {
         maxMonthActivity = count;
         mostActiveMonth = month;
-      }
-    }
-
-    // Most Active Day
-    let mostActiveDay = "Wednesday";
-    let maxDayActivity = 0;
-    for (const [day, count] of Object.entries(daysOfWeekActivity)) {
-      if (count > maxDayActivity) {
-        maxDayActivity = count;
-        mostActiveDay = day;
       }
     }
 

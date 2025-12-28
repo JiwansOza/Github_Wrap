@@ -82,7 +82,25 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                 </div>
             )
         },
-        // Card 5: Team Player (New)
+        // Card 5: Velocity (New)
+        {
+            color: "from-rose-600 to-orange-800",
+            content: (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-6">
+                    <h3 className="text-2xl uppercase tracking-widest opacity-80">God Mode</h3>
+
+                    <div className="bg-white/10 p-6 rounded-3xl border border-white/20 backdrop-blur-lg">
+                        <div className="text-sm opacity-70 uppercase mb-2">On {new Date(stats.busiestDay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>
+                        <div className="text-7xl font-black">{stats.busiestDay.count}</div>
+                        <div className="text-lg font-bold">Contributions</div>
+                    </div>
+                    <p className="opacity-80 max-w-[240px]">
+                        You woke up and chose violence.
+                    </p>
+                </div>
+            )
+        },
+        // Card 6: Team Player (New)
         {
             color: "from-pink-500 to-red-600",
             content: (
@@ -105,7 +123,7 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                 </div>
             )
         },
-        // Card 6: Active Days & Top Language
+        // Card 7: Active Days & Top Language
         {
             color: "from-orange-500 to-red-600",
             content: (
@@ -113,8 +131,13 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                     <h3 className="text-2xl uppercase tracking-widest opacity-80 mb-8">Consistency</h3>
                     <div className="text-8xl font-black mb-2">{stats.daysActive}</div>
                     <div className="text-xl font-bold opacity-90 mb-6">Days Active</div>
-                    <div className="text-xl font-black px-6 py-3 bg-white/10 rounded-full border border-white/20">
-                        Top: {stats.topLanguage}
+                    <div className="flex flex-col gap-2 w-full px-4">
+                        <div className="text-xl font-black px-6 py-3 bg-white/10 rounded-full border border-white/20">
+                            Top: {stats.topLanguage}
+                        </div>
+                        <div className="text-xs opacity-60 uppercase tracking-widest mt-2">
+                            Polyglot Score: {stats.polyglotScore}/100
+                        </div>
                     </div>
                 </div>
             )
