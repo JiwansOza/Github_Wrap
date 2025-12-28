@@ -76,6 +76,11 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
             totalPullRequestContributions
             totalIssueContributions
             totalPullRequestReviewContributions
+            commitContributionsByRepository {
+              contributions {
+                occurredAt
+              }
+            }
             contributionCalendar {
               totalContributions
               weeks {
