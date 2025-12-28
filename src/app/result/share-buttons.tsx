@@ -50,22 +50,22 @@ export default function ShareButtons({ username, ogImageUrl, repoCount, commitCo
     const linkedinUrl = shareUrl ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}` : '#';
 
     return (
-        <div className="flex flex-col gap-4 w-full">
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-col gap-3 w-full">
+            <div className="flex flex-row gap-3 justify-between w-full">
                 <button
                     onClick={handleDownload}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-bold text-lg rounded-xl hover:bg-gray-200 hover:scale-105 transition-all shadow-lg hover:shadow-xl"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white text-black font-bold text-sm sm:text-lg rounded-xl hover:bg-gray-200 hover:scale-105 transition-all shadow-lg"
                 >
-                    <Download size={24} />
-                    <span>Download Image</span>
+                    <Download size={20} className="sm:w-6 sm:h-6" />
+                    <span>Save Image</span>
                 </button>
 
                 <button
                     onClick={handleCopyLink}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium text-lg rounded-xl transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium text-sm sm:text-lg rounded-xl transition-all"
                 >
-                    <LinkIcon size={24} />
-                    <span>{copied ? 'Copied!' : 'Copy Link'}</span>
+                    <LinkIcon size={20} className="sm:w-6 sm:h-6" />
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
                 </button>
             </div>
 
@@ -89,13 +89,6 @@ export default function ShareButtons({ username, ogImageUrl, repoCount, commitCo
                         <Linkedin size={20} />
                         <span>LinkedIn</span>
                     </a>
-                    <button
-                        onClick={handleDownload}
-                        className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-90 text-white rounded-lg font-bold transition-all hover:scale-105"
-                    >
-                        <Instagram size={20} />
-                        <span>Story</span>
-                    </button>
                 </div>
             )}
         </div>
