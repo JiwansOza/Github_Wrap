@@ -18,17 +18,20 @@ const graphqlClient = graphql.defaults({
 export interface WrappedStats {
   username: string;
   avatarUrl: string;
+  followers: number; // New
   totalCommits: number;
   totalPublicRepos: number;
   daysActive: number;
   longestStreak: number;
   currentStreak: number;
   mostActiveMonth: string;
+  mostActiveDay: string; // New
   topLanguage: string;
   languages: Array<{ name: string; percent: number; color: string }>;
   codingStyle: string;
   totalPRs: number;
   totalIssues: number;
+  totalReviews: number; // New
   totalStars: number;
   roast: string;
   topRepo: { name: string; stars: number; description: string };
@@ -61,6 +64,7 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
             totalCommitContributions
             totalPullRequestContributions
             totalIssueContributions
+            totalPullRequestReviewContributions
             contributionCalendar {
               totalContributions
               weeks {
@@ -102,56 +106,21 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
 
     // --- Calculate Stats ---
 
+    // --- Calculate Stats ---
+
     // Total Commits/Contributions
     const totalCommits = contributionCalendar.totalContributions;
     const totalPRs = contributionCollection.totalPullRequestContributions;
     const totalIssues = contributionCollection.totalIssueContributions;
+    const totalReviews = contributionCollection.totalPullRequestReviewContributions || 0; // New
 
-    // Total Stars
+    // Total Stars & Languages
     let totalStars = 0;
-    repos.forEach((repo: any) => {
-      totalStars += repo.stargazers.totalCount;
-    });
-
-    // Days Active & Streak
-    let daysActive = 0;
-    let longestStreak = 0;
-    let currentStreak = 0;
-    const monthsActivity: { [key: string]: number } = {};
-
-    contributionCalendar.weeks.forEach((week: any) => {
-      week.contributionDays.forEach((day: any) => {
-        if (day.contributionCount > 0) {
-          daysActive++;
-          currentStreak++;
-
-          // Monthly Activity
-          const month = new Date(day.date).toLocaleString('default', { month: 'long' });
-          monthsActivity[month] = (monthsActivity[month] || 0) + day.contributionCount;
-        } else {
-          longestStreak = Math.max(longestStreak, currentStreak);
-          currentStreak = 0;
-        }
-      });
-    });
-    // Final check for streak if active at end of year
-    longestStreak = Math.max(longestStreak, currentStreak);
-
-    // Most Active Month
-    let mostActiveMonth = "January";
-    let maxMonthActivity = 0;
-    for (const [month, count] of Object.entries(monthsActivity)) {
-      if (count > maxMonthActivity) {
-        maxMonthActivity = count;
-        mostActiveMonth = month;
-      }
-    }
-
-    // Top Languages Calculation
     const languageMap: { [key: string]: { count: number; color: string } } = {};
     let totalRepoLanguages = 0;
 
     repos.forEach((repo: any) => {
+      totalStars += repo.stargazers.totalCount;
       if (repo.languages.nodes.length > 0) {
         const langNode = repo.languages.nodes[0];
         const langName = langNode.name;
@@ -165,6 +134,7 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
       }
     });
 
+    // Languages Array
     const languages = Object.entries(languageMap)
       .map(([name, data]) => ({
         name,
@@ -173,9 +143,59 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
         percent: totalRepoLanguages > 0 ? (data.count / totalRepoLanguages) * 100 : 0
       }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 5); // Top 5
+      .slice(0, 5);
 
     const topLanguage = languages.length > 0 ? languages[0].name : "N/A";
+
+    // Days Active, Streak, Month, Day of Week
+    let daysActive = 0;
+    let longestStreak = 0;
+    let currentStreak = 0;
+    const monthsActivity: { [key: string]: number } = {};
+    const daysOfWeekActivity: { [key: string]: number } = {}; // New
+
+    contributionCalendar.weeks.forEach((week: any) => {
+      week.contributionDays.forEach((day: any) => {
+        if (day.contributionCount > 0) {
+          daysActive++;
+          currentStreak++;
+
+          // Monthly Activity
+          const dateObj = new Date(day.date);
+          const month = dateObj.toLocaleString('default', { month: 'long' });
+          monthsActivity[month] = (monthsActivity[month] || 0) + day.contributionCount;
+
+          // Day of Week Activity
+          const dayName = dateObj.toLocaleString('default', { weekday: 'long' });
+          daysOfWeekActivity[dayName] = (daysOfWeekActivity[dayName] || 0) + day.contributionCount;
+
+        } else {
+          longestStreak = Math.max(longestStreak, currentStreak);
+          currentStreak = 0;
+        }
+      });
+    });
+    longestStreak = Math.max(longestStreak, currentStreak);
+
+    // Most Active Month
+    let mostActiveMonth = "January";
+    let maxMonthActivity = 0;
+    for (const [month, count] of Object.entries(monthsActivity)) {
+      if (count > maxMonthActivity) {
+        maxMonthActivity = count;
+        mostActiveMonth = month;
+      }
+    }
+
+    // Most Active Day
+    let mostActiveDay = "Wednesday";
+    let maxDayActivity = 0;
+    for (const [day, count] of Object.entries(daysOfWeekActivity)) {
+      if (count > maxDayActivity) {
+        maxDayActivity = count;
+        mostActiveDay = day;
+      }
+    }
 
     // Coding Style / Persona Logic
     let morning = 0; // 5-11
@@ -223,13 +243,12 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     // Top Repo (Project Spotlight)
     let topRepo = { name: "N/A", stars: 0, description: "No top project found." };
     if (repos.length > 0) {
-      // Already sorted by pushed_at in query, but we want stars for "Top Project"
       const sortedByStars = [...repos].sort((a: any, b: any) => b.stargazers.totalCount - a.stargazers.totalCount);
       const best = sortedByStars[0];
       topRepo = {
         name: best.name,
         stars: best.stargazers.totalCount,
-        description: best.description || "No description provided." // We didn't fetch description in query, need to check
+        description: best.description || "No description provided."
       };
     }
 
@@ -248,17 +267,20 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     return {
       username: user.login,
       avatarUrl: user.avatar_url,
+      followers: user.followers, // New
       totalCommits,
       totalPublicRepos: user.public_repos,
       daysActive,
       longestStreak,
       currentStreak,
       mostActiveMonth,
+      mostActiveDay, // New
       topLanguage,
       languages,
       codingStyle,
       totalPRs,
       totalIssues,
+      totalReviews, // New
       totalStars,
       roast,
       topRepo,
