@@ -198,7 +198,12 @@ export async function GET(req: NextRequest) {
                                 </div>
                             </div>
                         )}
-
+                        {/* Credits */}
+                        <div style={{ display: 'flex', width: '100%', justifyContent: 'center', marginTop: 'auto', paddingTop: '24px' }}>
+                            <div style={{ display: 'flex', fontSize: 18, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                                Built by @JiwansOza
+                            </div>
+                        </div>
                     </div>
                 </div>
             ),

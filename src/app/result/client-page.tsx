@@ -95,7 +95,7 @@ export default function ClientPage({ stats }: { stats: any }) {
             </div>
 
             <footer className="relative z-10 text-center text-gray-500 text-xs py-4">
-                Built by <a href="https://github.com/JiwansOza" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Jiwans Oza</a> • Generated with Vercel OG
+                Built by <a href="https://jiwans-oza.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Jiwans Oza</a> 
             </footer>
         </div>
     );
