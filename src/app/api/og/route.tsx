@@ -23,12 +23,18 @@ export async function GET(req: NextRequest) {
         const peakDay = searchParams.get('peakDay') || 'DAY';
 
         let languages: any[] = [];
+        let activity: any = { morning: 0, daytime: 0, evening: 0, night: 0 };
         try {
             const langParam = searchParams.get('languages');
             if (langParam) languages = JSON.parse(langParam);
+            const actParam = searchParams.get('activity');
+            if (actParam) activity = JSON.parse(actParam);
         } catch (e) {
-            console.error('Failed to parse languages', e);
+            console.error('Failed to parse data', e);
         }
+
+        // Calculate max activity for bar scaling
+        const maxActivity = Math.max(activity.morning, activity.daytime, activity.evening, activity.night) || 1;
 
         // Static Theme (Cyberpunk/Dark)
         const t = {
