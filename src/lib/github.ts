@@ -299,30 +299,36 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     else if (longestStreak > 30) roast = "Consistency is key, but so is sleep.";
     else if (codingStyle.includes("Weekend")) roast = "Weekend Warrior: Coding only when paid to do so? Oh wait, it's free.";
 
+    // Polyglot Score
+    let polyglotScore = Math.min(Object.keys(languageMap).length * 15, 100);
+    if (languages.length > 5) polyglotScore = 100;
+
     return {
       username: user.login,
       avatarUrl: user.avatar_url,
-      followers: user.followers, // New
+      followers: user.followers,
       totalCommits,
       totalPublicRepos: user.public_repos,
       daysActive,
       longestStreak,
       currentStreak,
       mostActiveMonth,
-      mostActiveDay, // New
+      mostActiveDay,
       topLanguage,
       languages,
       codingStyle,
       totalPRs,
       totalIssues,
-      totalReviews, // New
+      totalReviews,
       totalStars,
       roast,
       topRepo,
-      createdAt, // New
-      totalStarred, // New
-      totalContributedTo, // New
-      activityByPeriod: { morning, daytime, evening, night } // New
+      createdAt,
+      totalStarred,
+      totalContributedTo,
+      activityByPeriod: { morning, daytime, evening, night },
+      busiestDay,
+      polyglotScore
     };
 
   } catch (error) {
