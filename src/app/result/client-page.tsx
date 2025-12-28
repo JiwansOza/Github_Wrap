@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import TiltCard from './tilt-card';
 import ShareButtons from './share-buttons';
+import StoryMode from './story-mode';
 
 // Helper to construct OG URL dynamically
 function getOgUrl(baseUrl: string, stats: any, theme: string) {
+    // ... existing implementation remains same ...
     const params = new URLSearchParams({
         username: stats.username || 'User',
         avatar: stats.avatarUrl || '',
@@ -33,10 +35,15 @@ function getOgUrl(baseUrl: string, stats: any, theme: string) {
 export default function ClientPage({ stats }: { stats: any }) {
     // We keep theme state for potential future use, but it's hardcoded to 'cyberpunk' for now
     const [theme] = useState('cyberpunk');
+    const [showStory, setShowStory] = useState(true);
     const ogImageUrl = getOgUrl(typeof window !== 'undefined' ? window.location.origin : '', stats, theme);
 
+    if (showStory) {
+        return <StoryMode stats={stats} onComplete={() => setShowStory(false)} />;
+    }
+
     return (
-        <div className="min-h-screen bg-[#0d1117] text-white selection:bg-purple-500/30 font-sans pb-10 flex flex-col justify-between">
+        <div className="min-h-screen bg-[#0d1117] text-white selection:bg-purple-500/30 font-sans pb-10 flex flex-col justify-between animate-in fade-in duration-700">
             {/* Background Glows */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] bg-green-500/10 rounded-full blur-[100px]" />
