@@ -155,14 +155,39 @@ export async function GET(req: NextRequest) {
 
                         {/* Secondary Stats Grid */}
                         <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '40px', gap: '24px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.accent2, marginBottom: '8px' }}>LONGEST STREAK</div>
-                                <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain }}>{streak}</div>
+                            {/* Pulse Graph (Replaces Streak) */}
+                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1.2, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.accent2, marginBottom: 'auto' }}>DAILY RHYTHM</div>
+                                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: '60px', width: '100%', gap: '8px' }}>
+                                    {[
+                                        { label: 'M', val: activity.morning, color: '#fcd34d' }, // Morning
+                                        { label: 'D', val: activity.daytime, color: '#39d353' }, // Day
+                                        { label: 'E', val: activity.evening, color: '#a371f7' }, // Evening
+                                        { label: 'N', val: activity.night, color: '#38bdf8' }    // Night
+                                    ].map((item, i) => (
+                                        <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, height: '100%', justifyContent: 'flex-end' }}>
+                                            <div style={{
+                                                display: 'flex',
+                                                width: '100%',
+                                                height: `${Math.max((item.val / maxActivity) * 100, 10)}%`,
+                                                backgroundColor: item.color,
+                                                borderRadius: '4px 4px 0 0',
+                                                opacity: 0.8
+                                            }} />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: '8px', fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>
+                                    <span>Mor</span><span>Day</span><span>Eve</span><span>Nig</span>
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', flex: 0.8, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
                                 <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>PEAK DAY</div>
-                                <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain, textTransform: 'uppercase' }}>{peakDay}</div>
+                                <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain, textTransform: 'uppercase', lineHeight: 1 }}>{peakDay.slice(0, 3)}</div>
+                                <div style={{ display: 'flex', fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>Most Active</div>
                             </div>
+
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.5, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
                                 <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginBottom: '16px' }}>TOP LANGUAGES</div>
                                 <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>

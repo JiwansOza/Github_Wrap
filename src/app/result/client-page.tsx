@@ -31,6 +31,7 @@ function getOgUrl(baseUrl: string, stats: any, theme: string) {
         peakDay: stats.mostActiveDay || 'Wednesday',
         created: stats.createdAt || new Date().toISOString(),
         starred: (stats.totalStarred || 0).toString(),
+        activity: JSON.stringify(stats.activityByPeriod || {}),
         languages: JSON.stringify(stats.languages || []),
     });
     return `/api/og?${params.toString()}`;
@@ -106,7 +107,7 @@ export default function ClientPage({ stats }: { stats: any }) {
             </div>
 
             <footer className="relative z-10 text-center text-gray-500 text-xs py-4">
-                Built by <a href="https://jiwans-oza.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Jiwans Oza</a> 
+                Built by <a href="https://jiwans-oza.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Jiwans Oza</a>
             </footer>
         </div>
     );
