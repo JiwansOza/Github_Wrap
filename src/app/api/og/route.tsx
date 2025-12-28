@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
         const repoStars = searchParams.get('repoStars') || '0';
         const followers = searchParams.get('followers') || '0';
         const peakDay = searchParams.get('peakDay') || 'DAY';
+        const velocity = searchParams.get('velocity') || '0';
+        const polyglot = searchParams.get('polyglot') || '0';
 
         let languages: any[] = [];
         let activity: any = { morning: 0, daytime: 0, evening: 0, night: 0 };
@@ -63,6 +65,20 @@ export async function GET(req: NextRequest) {
         const flexCol = { display: 'flex', flexDirection: 'column' } as const;
         const flexRow = { display: 'flex', flexDirection: 'row' } as const;
 
+        // Helper to map GitHub language names to Devicon URLs
+        const getIcon = (lang: string) => {
+            const map: any = {
+                'JavaScript': 'javascript', 'TypeScript': 'typescript', 'Python': 'python',
+                'Java': 'java', 'C++': 'cplusplus', 'C': 'c', 'C#': 'csharp',
+                'Go': 'go', 'Rust': 'rust', 'PHP': 'php', 'Ruby': 'ruby',
+                'Swift': 'swift', 'Kotlin': 'kotlin', 'Dart': 'dart',
+                'HTML': 'html5', 'CSS': 'css3', 'Shell': 'bash', 'Dockerfile': 'docker',
+                'Vue': 'vuejs', 'React': 'react', 'Svelte': 'svelte', 'Angular': 'angularjs'
+            };
+            const key = map[lang] || lang.toLowerCase();
+            return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${key}/${key}-original.svg`;
+        };
+
         return new ImageResponse(
             (
                 <div
@@ -97,7 +113,7 @@ export async function GET(req: NextRequest) {
                         boxShadow: '0 50px 100px -20px rgba(0,0,0,0.8)',
                     }}>
                         {/* Header with Avatar and Member Since */}
-                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 {avatar && <img src={avatar} width="100" height="100" style={{ borderRadius: '50%', border: '4px solid #fff', marginRight: '24px' }} />}
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -129,8 +145,8 @@ export async function GET(req: NextRequest) {
                             flexDirection: 'column',
                             backgroundColor: 'rgba(255,255,255,0.05)',
                             borderRadius: '24px',
-                            padding: '40px',
-                            marginBottom: '40px',
+                            padding: '30px',
+                            marginBottom: '24px',
                             border: '1px solid rgba(255,255,255,0.05)',
                         }}>
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -141,7 +157,7 @@ export async function GET(req: NextRequest) {
                         </div>
 
                         {/* Main Stats Row */}
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '40px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '24px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ display: 'flex', fontSize: 110, fontWeight: 'bold', lineHeight: 1, color: t.textMain }}>
                                     {commits}
@@ -161,7 +177,7 @@ export async function GET(req: NextRequest) {
                         </div>
 
                         {/* Secondary Stats Grid */}
-                        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '40px', gap: '24px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '24px', gap: '24px' }}>
                             {/* Pulse Graph (Replaces Streak) */}
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.2, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
                                 <div style={{ display: 'flex', fontSize: 20, color: t.accent2, marginBottom: 'auto' }}>DAILY RHYTHM</div>
@@ -189,11 +205,9 @@ export async function GET(req: NextRequest) {
                                 </div>
                             </div>
 
-                            const velocity = searchParams.get('velocity') || '0';
-                            const polyglot = searchParams.get('polyglot') || '0';
-                            // ... (inside JSX)
 
-                            // ...
+
+
 
                             {/* Velocity / God Mode (Replaces Peak Day) */}
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 0.8, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
@@ -207,16 +221,21 @@ export async function GET(req: NextRequest) {
                                     <div style={{ display: 'flex', fontSize: 20, color: t.textSub }}>TOP LANGUAGES</div>
                                     <div style={{ display: 'flex', fontSize: 16, color: t.accent2, fontWeight: 'bold' }}>Polyglot: {polyglot}</div>
                                 </div>
-                                <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>
+                                <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '100px', overflow: 'hidden', marginBottom: '16px' }}>
                                     {languages.map((l, i) => (
                                         <div key={i} style={{ display: 'flex', height: '100%', width: `${l.percent}%`, backgroundColor: l.color }} />
                                     ))}
                                 </div>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                                    {languages.slice(0, 3).map((l, i) => (
-                                        <div key={i} style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: t.textSub }}>
-                                            <div style={{ display: 'flex', width: '12px', height: '12px', borderRadius: '50%', backgroundColor: l.color, marginRight: '8px' }} />
-                                            {l.name}
+                                    {languages.slice(0, 5).map((l, i) => (
+                                        <div key={i} style={{ display: 'flex', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '100px' }}>
+                                            <img
+                                                src={getIcon(l.name)}
+                                                width="32"
+                                                height="32"
+                                                style={{ marginRight: '10px' }}
+                                            />
+                                            <div style={{ display: 'flex', fontSize: 20, fontWeight: 'bold', color: t.textMain }}>{Math.round(l.percent)}%</div>
                                         </div>
                                     ))}
                                 </div>
