@@ -27,6 +27,8 @@ function getOgUrl(baseUrl: string, stats: any, theme: string) {
         roast: stats.roast || 'No roast available.',
         repo: stats.topRepo?.name || '',
         repoStars: (stats.topRepo?.stars || 0).toString(),
+        followers: (stats.followers || 0).toString(),
+        peakDay: stats.mostActiveDay || 'Wednesday',
         languages: JSON.stringify(stats.languages || []),
     });
     return `/api/og?${params.toString()}`;

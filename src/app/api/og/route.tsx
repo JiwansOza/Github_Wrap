@@ -19,6 +19,8 @@ export async function GET(req: NextRequest) {
         const roast = searchParams.get('roast') || 'You code like a machine.';
         const repo = searchParams.get('repo') || '';
         const repoStars = searchParams.get('repoStars') || '0';
+        const followers = searchParams.get('followers') || '0';
+        const peakDay = searchParams.get('peakDay') || 'DAY';
 
         let languages: any[] = [];
         try {
@@ -93,7 +95,9 @@ export async function GET(req: NextRequest) {
                                 {avatar && <img src={avatar} width="100" height="100" style={{ borderRadius: '50%', border: '4px solid #fff', marginRight: '24px' }} />}
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', fontSize: 60, fontWeight: 'bold', lineHeight: 1.1, color: t.textMain }}>@{username}</div>
-                                    <div style={{ display: 'flex', fontSize: 24, color: t.textSub }}>Wrapped 2025</div>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', fontSize: 24, color: t.textSub, marginTop: '8px' }}>
+                                        Wrapped 2025 <span style={{ margin: '0 10px' }}>•</span> {followers} Followers
+                                    </div>
                                 </div>
                             </div>
 
@@ -153,8 +157,8 @@ export async function GET(req: NextRequest) {
                                 <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain }}>{streak}</div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
-                                <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>PRs MERGED</div>
-                                <div style={{ display: 'flex', fontSize: 56, fontWeight: 'bold', color: t.textMain }}>{prs}</div>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.accent1, marginBottom: '8px' }}>PEAK DAY</div>
+                                <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain, textTransform: 'uppercase' }}>{peakDay}</div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.5, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
                                 <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginBottom: '16px' }}>TOP LANGUAGES</div>
