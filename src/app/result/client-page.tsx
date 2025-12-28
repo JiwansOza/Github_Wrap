@@ -81,6 +81,28 @@ export default function ClientPage({ stats }: { stats: any }) {
                         </TiltCard>
                     </div>
 
+                    {/* Language Distribution Bar */}
+                    <div className="w-full space-y-3">
+                        <div className="flex h-4 w-full rounded-full overflow-hidden bg-white/5">
+                            {stats.languages.map((lang: any) => (
+                                <div
+                                    key={lang.name}
+                                    style={{ width: `${lang.percent}%`, backgroundColor: lang.color }}
+                                    className="h-full transition-all duration-500 hover:opacity-80"
+                                    title={`${lang.name}: ${lang.percent.toFixed(1)}%`}
+                                />
+                            ))}
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-4 text-xs font-mono text-gray-400">
+                            {stats.languages.slice(0, 4).map((lang: any) => (
+                                <div key={lang.name} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: lang.color }} />
+                                    <span>{lang.name} <span className="opacity-50">{Math.round(lang.percent)}%</span></span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Action Buttons */}
                     <div className="w-full">
                         <ShareButtons
