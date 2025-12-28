@@ -89,14 +89,14 @@ export async function GET(req: NextRequest) {
                         padding: '60px',
                         boxShadow: '0 50px 100px -20px rgba(0,0,0,0.8)',
                     }}>
-                        {/* Header with Avatar */}
+                        {/* Header with Avatar and Member Since */}
                         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 {avatar && <img src={avatar} width="100" height="100" style={{ borderRadius: '50%', border: '4px solid #fff', marginRight: '24px' }} />}
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', fontSize: 60, fontWeight: 'bold', lineHeight: 1.1, color: t.textMain }}>@{username}</div>
                                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', fontSize: 24, color: t.textSub, marginTop: '8px' }}>
-                                        Wrapped 2025 <span style={{ margin: '0 10px' }}>•</span> {followers} Followers
+                                        Since {new Date(searchParams.get('created') || Date.now()).getFullYear()} <span style={{ margin: '0 10px' }}>•</span> {followers} Followers
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@ export async function GET(req: NextRequest) {
                             </div>
                         </div>
 
-                        {/* Roast Section (Viral) */}
+                        {/* Roast Section */}
                         <div style={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -126,7 +126,10 @@ export async function GET(req: NextRequest) {
                             marginBottom: '40px',
                             border: '1px solid rgba(255,255,255,0.05)',
                         }}>
-                            <div style={{ display: 'flex', fontSize: 20, color: t.accent2, textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold', marginBottom: '16px' }}>AI Analysis</div>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                <div style={{ display: 'flex', fontSize: 20, color: t.accent2, textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>AI Analysis</div>
+                                <div style={{ display: 'flex', fontSize: 20, color: 'rgba(255,255,255,0.4)' }}>{searchParams.get('starred') || '0'} Stars Given</div>
+                            </div>
                             <div style={{ display: 'flex', fontSize: 40, fontStyle: 'italic', color: t.textMain, lineHeight: 1.3 }}>"{roast}"</div>
                         </div>
 
@@ -162,7 +165,6 @@ export async function GET(req: NextRequest) {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1.5, backgroundColor: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '24px' }}>
                                 <div style={{ display: 'flex', fontSize: 20, color: t.textSub, marginBottom: '16px' }}>TOP LANGUAGES</div>
-                                {/* Visualize Bar */}
                                 <div style={{ display: 'flex', width: '100%', height: '16px', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>
                                     {languages.map((l, i) => (
                                         <div key={i} style={{ display: 'flex', height: '100%', width: `${l.percent}%`, backgroundColor: l.color }} />
@@ -179,26 +181,29 @@ export async function GET(req: NextRequest) {
                             </div>
                         </div>
 
-                        {/* Project Spotlight Footer */}
+                        {/* Project Spotlight Footer (Enhanced) */}
                         {repo && (
                             <div style={{
                                 display: 'flex',
-                                flexDirection: 'row',
+                                flexDirection: 'column',
                                 width: '100%',
                                 backgroundColor: 'rgba(0,0,0,0.2)',
                                 padding: '30px',
                                 borderRadius: '24px',
                                 border: '1px solid rgba(255,255,255,0.1)',
-                                alignItems: 'center',
-                                justifyContent: 'space-between'
                             }}>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <div style={{ display: 'flex', fontSize: 18, color: t.accent1, marginBottom: '8px', textTransform: 'uppercase', fontWeight: 'bold' }}>Project Spotlight</div>
-                                    <div style={{ display: 'flex', fontSize: 36, fontWeight: 'bold', color: t.textMain }}>{repo}</div>
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div style={{ display: 'flex', fontSize: 18, color: t.accent1, marginBottom: '8px', textTransform: 'uppercase', fontWeight: 'bold' }}>Top Project</div>
+                                        <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain }}>{repo}</div>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
+                                        <div style={{ display: 'flex', fontSize: 40, color: '#eab308' }}>★</div>
+                                        <div style={{ display: 'flex', fontSize: 40, fontWeight: 'bold', color: t.textMain }}>{repoStars}</div>
+                                    </div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ display: 'flex', fontSize: 48, color: '#eab308' }}>★</div>
-                                    <div style={{ display: 'flex', fontSize: 48, fontWeight: 'bold', color: t.textMain }}>{repoStars}</div>
+                                <div style={{ display: 'flex', fontSize: 24, color: t.textSub, lineHeight: 1.4 }}>
+                                    Built with <span style={{ color: t.textMain, fontWeight: 'bold', marginLeft: '6px' }}>{topLang}</span>.
                                 </div>
                             </div>
                         )}

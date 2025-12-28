@@ -13,28 +13,6 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
     const [index, setIndex] = useState(0);
     const [exitX, setExitX] = useState(0);
 
-    const handleDragEnd = (event: any, info: any) => {
-        if (info.offset.x > 100) {
-            setExitX(200);
-            if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50); // Haptic
-            setTimeout(() => nextCard(), 200);
-        } else if (info.offset.x < -100) {
-            setExitX(-200);
-            if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50); // Haptic
-            setTimeout(() => nextCard(), 200);
-        }
-    };
-
-    const nextCard = () => {
-        if (index === slides.length - 1) {
-            if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 100, 50]); // Success Haptic
-            onComplete();
-        } else {
-            setIndex(index + 1);
-            setExitX(0);
-        }
-    };
-
     const slides = [
         // Card 1: Intro
         {
@@ -43,14 +21,25 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                 <div className="flex flex-col items-center justify-center h-full text-center p-6">
                     <div className="text-8xl mb-6">👀</div>
                     <h2 className="text-4xl font-black mb-4">Ready to swipe?</h2>
-                    <p className="text-xl opacity-90 mb-6">Your 2025 year in code is waiting.</p>
-                    <div className="bg-white/20 px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm">
-                        Legend since {new Date().getFullYear() - stats.yearsActive} 🏅
-                    </div>
+                    <p className="text-xl opacity-90">Your 2025 year in code is waiting.</p>
                 </div>
             )
         },
-        // Card 2: Commits
+        // Card 2: Veteran Status (New)
+        {
+            color: "from-blue-900 to-slate-900",
+            content: (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">
+                    <h3 className="text-2xl uppercase tracking-widest opacity-80 mb-4">Legend Status</h3>
+                    <div className="text-6xl font-black">{new Date(stats.createdAt).getFullYear()}</div>
+                    <div className="text-xl opacity-90">Member since</div>
+                    <p className="opacity-60 mt-4 text-sm max-w-[200px]">
+                        You've seen frameworks rise and fall.
+                    </p>
+                </div>
+            )
+        },
+        // Card 3: Commits
         {
             color: "from-emerald-500 to-teal-700",
             content: (
@@ -61,31 +50,72 @@ export default function StoryMode({ stats, onComplete }: StoryModeProps) {
                 </div>
             )
         },
-        // Card 3: Active Days
+        // Card 4: Pulse Graph (New)
+        {
+            color: "from-indigo-900 to-purple-800",
+            content: (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6 w-full">
+                    <h3 className="text-xl uppercase tracking-widest opacity-80 mb-8">Your Rhythm</h3>
+
+                    <div className="flex items-end gap-3 w-full max-w-[240px] h-40 mb-6">
+                        {[
+                            ['Morning', stats.activityByPeriod?.morning],
+                            ['Day', stats.activityByPeriod?.daytime],
+                            ['Evening', stats.activityByPeriod?.evening],
+                            ['Night', stats.activityByPeriod?.night]
+                        ].map(([label, val]: any) => {
+                            const max = Math.max(stats.activityByPeriod?.morning || 0, stats.activityByPeriod?.daytime || 0, stats.activityByPeriod?.evening || 0, stats.activityByPeriod?.night || 0) || 1;
+                            const height = `${Math.max((val / max) * 100, 10)}%`;
+                            return (
+                                <div key={label} className="flex-1 flex flex-col items-center justify-end h-full gap-2">
+                                    <motion.div
+                                        initial={{ height: 0 }}
+                                        animate={{ height }}
+                                        className="w-full bg-white/30 rounded-t-lg"
+                                    />
+                                    <span className="text-[10px] uppercase opacity-70">{label.toString().slice(0, 3)}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <p className="text-lg font-bold text-purple-200">{stats.codingStyle}</p>
+                </div>
+            )
+        },
+        // Card 5: Team Player (New)
+        {
+            color: "from-pink-500 to-red-600",
+            content: (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-8">
+                    <h3 className="text-2xl uppercase tracking-widest opacity-80">Team Player</h3>
+
+                    <div className="grid grid-cols-2 gap-6 w-full">
+                        <div className="bg-black/20 p-4 rounded-2xl">
+                            <div className="text-4xl font-bold">{stats.totalStarred}</div>
+                            <div className="text-xs uppercase opacity-70 mt-1">Starred</div>
+                        </div>
+                        <div className="bg-black/20 p-4 rounded-2xl">
+                            <div className="text-4xl font-bold">{stats.totalContributedTo}</div>
+                            <div className="text-xs uppercase opacity-70 mt-1">Helped</div>
+                        </div>
+                    </div>
+                    <div className="text-sm opacity-80">
+                        {stats.totalContributedTo > 0 ? "You don't just clear issues, you ship fixes." : "Loving the open source vibes."}
+                    </div>
+                </div>
+            )
+        },
+        // Card 6: Active Days & Top Language
         {
             color: "from-orange-500 to-red-600",
             content: (
                 <div className="flex flex-col items-center justify-center h-full text-center p-6">
                     <h3 className="text-2xl uppercase tracking-widest opacity-80 mb-8">Consistency</h3>
                     <div className="text-8xl font-black mb-2">{stats.daysActive}</div>
-                    <div className="text-3xl font-bold opacity-90">Days Active</div>
-                    <div className="mt-8 bg-black/20 px-6 py-3 rounded-xl backdrop-blur-md">
-                        <div className="text-sm uppercase opacity-70">Longest Streak</div>
-                        <div className="text-3xl font-mono">🔥 {stats.longestStreak}</div>
+                    <div className="text-xl font-bold opacity-90 mb-6">Days Active</div>
+                    <div className="text-xl font-black px-6 py-3 bg-white/10 rounded-full border border-white/20">
+                        Top: {stats.topLanguage}
                     </div>
-                </div>
-            )
-        },
-        // Card 4: Top Language
-        {
-            color: "from-blue-600 to-indigo-800",
-            content: (
-                <div className="flex flex-col items-center justify-center h-full text-center p-6">
-                    <h3 className="text-2xl uppercase tracking-widest opacity-80 mb-8">Main Character</h3>
-                    <div className="text-6xl font-black mb-6 px-8 py-4 bg-white/10 rounded-3xl border border-white/20">
-                        {stats.topLanguage}
-                    </div>
-                    <p className="text-xl opacity-80">You typed this... a lot.</p>
                 </div>
             )
         },

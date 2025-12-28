@@ -33,9 +33,12 @@ export interface WrappedStats {
   totalIssues: number;
   totalReviews: number; // New
   totalStars: number;
-  yearsActive: number; // New
   roast: string;
-  topRepo: { name: string; stars: number; description: string };
+  topRepo: { name: string; stars: number; description: string; language: string }; // Added language
+  createdAt: string; // New
+  totalStarred: number; // New
+  totalContributedTo: number; // New
+  activityByPeriod: { morning: number; daytime: number; evening: number; night: number }; // New
 }
 
 export async function getGitHubStats(username: string): Promise<WrappedStats | null> {
@@ -61,6 +64,13 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     const contributionsQuery = `
       query($username: String!, $from: DateTime!, $to: DateTime!) {
         user(login: $username) {
+          createdAt
+          starredRepositories {
+            totalCount
+          }
+          repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, PULL_REQUEST, ISSUE]) {
+            totalCount
+          }
           contributionsCollection(from: $from, to: $to) {
             totalCommitContributions
             totalPullRequestContributions
@@ -107,13 +117,16 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
 
     // --- Calculate Stats ---
 
-    // --- Calculate Stats ---
-
     // Total Commits/Contributions
     const totalCommits = contributionCalendar.totalContributions;
     const totalPRs = contributionCollection.totalPullRequestContributions;
     const totalIssues = contributionCollection.totalIssueContributions;
     const totalReviews = contributionCollection.totalPullRequestReviewContributions || 0; // New
+
+    // New Stats
+    const createdAt = data.user.createdAt;
+    const totalStarred = data.user.starredRepositories.totalCount;
+    const totalContributedTo = data.user.repositoriesContributedTo.totalCount;
 
     // Total Stars & Languages
     let totalStars = 0;
@@ -242,14 +255,16 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     }
 
     // Top Repo (Project Spotlight)
-    let topRepo = { name: "N/A", stars: 0, description: "No top project found." };
+    let topRepo = { name: "N/A", stars: 0, description: "No top project found.", language: "N/A" };
     if (repos.length > 0) {
       const sortedByStars = [...repos].sort((a: any, b: any) => b.stargazers.totalCount - a.stargazers.totalCount);
       const best = sortedByStars[0];
+      const bestLang = best.languages.nodes.length > 0 ? best.languages.nodes[0].name : "N/A";
       topRepo = {
         name: best.name,
         stars: best.stargazers.totalCount,
-        description: best.description || "No description provided."
+        description: best.description || "No description provided.",
+        language: bestLang
       };
     }
 
@@ -265,32 +280,30 @@ export async function getGitHubStats(username: string): Promise<WrappedStats | n
     else if (longestStreak > 30) roast = "Consistency is key, but so is sleep.";
     else if (codingStyle.includes("Weekend")) roast = "Weekend Warrior: Coding only when paid to do so? Oh wait, it's free.";
 
-    // Calculate Years Active
-    const createdYear = new Date(user.created_at).getFullYear();
-    const currentYear = new Date().getFullYear();
-    const yearsActive = currentYear - createdYear;
-
     return {
       username: user.login,
       avatarUrl: user.avatar_url,
-      followers: user.followers,
+      followers: user.followers, // New
       totalCommits,
       totalPublicRepos: user.public_repos,
       daysActive,
       longestStreak,
       currentStreak,
       mostActiveMonth,
-      mostActiveDay,
+      mostActiveDay, // New
       topLanguage,
       languages,
       codingStyle,
-      yearsActive, // New
       totalPRs,
       totalIssues,
-      totalReviews,
+      totalReviews, // New
       totalStars,
       roast,
       topRepo,
+      createdAt, // New
+      totalStarred, // New
+      totalContributedTo, // New
+      activityByPeriod: { morning, daytime, evening, night } // New
     };
 
   } catch (error) {
