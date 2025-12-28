@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     const stats = await getGitHubStats(username);
     if (!stats) return { title: "User Not Found - GitHub Wrapped 2025" };
 
-    // Default OG for sharing (Cyberpunk theme default)
+    // Construct the OG Image URL with all dynamic params
     const params = new URLSearchParams({
         username: stats.username,
         avatar: stats.avatarUrl,
@@ -25,16 +25,46 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         repos: stats.totalPublicRepos.toString(),
         days: stats.daysActive.toString(),
         streak: stats.longestStreak.toString(),
-        lang: stats.topLanguage,
-        month: stats.mostActiveMonth,
+        currentStreak: (stats.currentStreak || 0).toString(),
+        lang: stats.topLanguage || 'Code',
+        month: stats.mostActiveMonth || 'Year',
+        prs: (stats.totalPRs || 0).toString(),
+        stars: (stats.totalStars || 0).toString(),
+        style: stats.codingStyle || 'Developer',
+        theme: 'cyberpunk', // Hardcoded default for consistency
+        roast: stats.roast || 'No roast available.',
+        repo: stats.topRepo?.name || '',
+        repoStars: (stats.topRepo?.stars || 0).toString(),
+        languages: JSON.stringify(stats.languages || []),
     });
-    // This URL will be the default one shared. 
-    // If the user shares a link ?theme=sunset, we could theoretically handle that if we pass searchParams to metadata,
-    // but for now, let's keep the metadata simple.
+
+    // Use absolute URL if possible, otherwise relative (Next.js handles relative if metadataBase is set)
+    // We assume the API route is at /api/og
+    const ogImageUrl = `/api/og?${params.toString()}`;
 
     return {
         title: `GitHub Wrapped 2025: @${stats.username}`,
-        description: `${stats.totalCommits} Commits, ${stats.longestStreak} Day Streak. View my year in code!`,
+        description: `Check out my GitHub 2025 stats: ${stats.totalCommits} commits, ${stats.longestStreak} day streak, and my coding personality is "${stats.codingStyle}".`,
+        openGraph: {
+            title: `GitHub Wrapped 2025: @${stats.username}`,
+            description: `Check out my GitHub 2025 stats: ${stats.totalCommits} commits, ${stats.longestStreak} day streak, and my coding personality is "${stats.codingStyle}".`,
+            images: [
+                {
+                    url: ogImageUrl,
+                    width: 1080,
+                    height: 1350,
+                    alt: `GitHub Wrapped 2025 for ${stats.username}`,
+                },
+            ],
+            type: 'website',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `GitHub Wrapped 2025: @${stats.username}`,
+            description: `Check out my GitHub 2025 stats!: ${stats.totalCommits} commits, ${stats.longestStreak} day streak!`,
+            images: [ogImageUrl],
+            creator: '@JiwansOza',
+        },
     };
 }
 
