@@ -93,7 +93,7 @@ export default function Home() {
       </div>
 
       <footer className="mt-20 text-gray-500 text-sm relative z-20">
-        <p>Built for Developers • Open Source</p>
+        Built by <a href="https://jiwans-oza.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Jiwans Oza</a>
       </footer>
 
     </div>
